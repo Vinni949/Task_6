@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.IO.Compression;
 using System.Collections;
 
@@ -54,7 +57,7 @@ namespace Task_6
                     switch (Console.ReadLine())
                     {
                         case "1":
-                            Compressig(file, "archivedOutput2.zip");
+                            Archiving(file, "archivedOutput2.gz");
                             Console.WriteLine("Файл заархивирован. Ищите его в папке с exe файлом");
                             break;
                         case "0":
@@ -138,6 +141,26 @@ namespace Task_6
                         {
                             fs.CopyTo(nf);
                         }
+                    }
+                }
+            }
+        }
+
+        static void Archiving(string source, string output)
+        {
+            string compressed = "archivedOutput2.zip";
+            using (FileStream ss = new FileStream(source, FileMode.OpenOrCreate))
+            {
+                using (FileStream ts = File.Create(compressed))   // поток для записи сжатого файла
+                {
+                    // поток архивации
+                    using (GZipStream cs = new GZipStream(ts, CompressionMode.Compress))
+                    {
+                        ss.CopyTo(cs); // копируем байты из одного потока в другой
+                        Console.WriteLine("Сжатие файла {0} завершено. Было: {1}  стало: {2}.",
+                                          source,
+                                          ss.Length,
+                                          ts.Length);
                     }
                 }
             }
